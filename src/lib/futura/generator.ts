@@ -134,7 +134,7 @@ const FALLBACK: Category = {
 const TONE_PALETTE: Record<Tone, { hex: string; name: string }[]> = {
   Luxury: [
     { name: "Obsidian", hex: "#111013" },
-    { name: "Bronze", hex: "#B98A४4".replace("४", "4") },
+    { name: "Bronze", hex: "#B98A44" },
     { name: "Champagne", hex: "#E8DCC6" },
     { name: "Deep Wine", hex: "#4A1F26" },
   ],
@@ -222,7 +222,7 @@ function detect(idea: string): Category {
 
 function place(idea: string): string | null {
   const m = idea.match(/\bin ([A-Z][a-zA-Z]+(?: [A-Z][a-zA-Z]+)?)/);
-  return m ? m[1] : null;
+  return m?.[1] ?? null;
 }
 
 const NAME_PREFIX = ["Casa", "Studio", "Maison", "Atelier", "Nova", "Terra", "Aurea", "Lumen", "Voce", "Onda"];
@@ -239,9 +239,10 @@ export function generateConcept(input: IdeaInput, remix?: Remix): Concept {
   const tone = remix ? REMIX_TONE[remix] : input.tone;
   const city = place(input.idea);
   const seed = hash(input.idea + tone + (remix ?? ""));
-  const brandName = `${NAME_PREFIX[seed % NAME_PREFIX.length]} ${NAME_SUFFIX[(seed >> 3) % NAME_SUFFIX.length]}`;
-  const palette = TONE_PALETTE[tone];
-  const typography = TONE_TYPE[tone];
+  const brandName = `${NAME_PREFIX[seed % NAME_PREFIX.length]!} ${NAME_SUFFIX[(seed >> 3) % NAME_SUFFIX.length]!}`;
+  const palette = TONE_PALETTE[tone]!;
+  const typography = TONE_TYPE[tone]!;
+  const [c0, c1, c2] = [palette[0]!, palette[1]!, palette[2]!];
   const where = city ? ` in ${city}` : "";
 
   const concept = `${tone} ${category.label}${where}`;
@@ -265,12 +266,12 @@ export function generateConcept(input: IdeaInput, remix?: Remix): Concept {
       "Premium",
       input.priority === "Customer experience" ? "Effortless" : "Memorable",
     ],
-    visualDirection: `${palette[0].name.toLowerCase()} base • ${typography.display.toLowerCase()} headlines • ${tone.toLowerCase()} material language`,
+    visualDirection: `${c0.name.toLowerCase()} base • ${typography.display.toLowerCase()} headlines • ${tone.toLowerCase()} material language`,
     palette,
     typography,
     logoDirection: `A restrained wordmark in ${typography.display.toLowerCase()}, paired with a single geometric mark derived from the ${category.world}.`,
-    packagingDirection: `Uncoated stock, ${palette[2].name.toLowerCase()} ground, blind-deboss mark, ${palette[1].name.toLowerCase()} foil accent.`,
-    storefrontDirection: `Low ambient light, ${palette[1].name.toLowerCase()} signage, layered depth through glass and stone at the ${category.world}.`,
+    packagingDirection: `Uncoated stock, ${c2.name.toLowerCase()} ground, blind-deboss mark, ${c1.name.toLowerCase()} foil accent.`,
+    storefrontDirection: `Low ambient light, ${c1.name.toLowerCase()} signage, layered depth through glass and stone at the ${category.world}.`,
     socialDirection: `Editorial grid: one wide hero frame, two detail crops, one motion loop. ${tone} tone of voice, minimal copy.`,
     productName: category.product,
     productOptions: category.productOptions,
@@ -285,7 +286,7 @@ export function generateConcept(input: IdeaInput, remix?: Remix): Concept {
     marketingIdeas: [
       `Launch film built around the ${category.world}`,
       "Founder-voice newsletter, twice monthly",
-      `${category.offering[0]} as the signature entry point`,
+      `${category.offering[0]!} as the signature entry point`,
       "Collaboration series with local makers",
     ],
     automationIdeas: [
@@ -323,11 +324,11 @@ export function generateConcept(input: IdeaInput, remix?: Remix): Concept {
       { title: "Detail crop", caption: `The ${category.product.toLowerCase()}, up close.`, tag: "Product" },
       { title: "Behind the scenes", caption: "Process over polish — for one post a week.", tag: "Story" },
       { title: "Guest moment", caption: "The room, at its best hour.", tag: "Lifestyle" },
-      { title: "Offer", caption: `${category.offering[0]} — now open.`, tag: "Campaign" },
+      { title: "Offer", caption: `${category.offering[0]!} — now open.`, tag: "Campaign" },
       { title: "Quiet post", caption: typography.note + ".", tag: "Brand" },
     ],
     world: [
-      { id: "store", label: "Store", headline: `The ${category.world}`, detail: category.storefrontDirection },
+      { id: "store", label: "Store", headline: `The ${category.world}`, detail: `Low ambient light, ${c1.name.toLowerCase()} signage, layered depth through glass and stone.` },
       { id: "products", label: "Products", headline: category.product, detail: `Range: ${category.offering.join(" • ")}.` },
       { id: "website", label: "Website", headline: "Digital home", detail: `Six sections, one narrative: ${["Hero", "Story", "Offer", "Gallery", "Location", "Contact"].join(" → ")}.` },
       { id: "social", label: "Social", headline: "Presence", detail: `${brandName} posts with restraint — quality over cadence.` },
