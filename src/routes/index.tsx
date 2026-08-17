@@ -1,24 +1,61 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Nav } from "@/components/futura/Nav";
+import { Hero } from "@/components/futura/Hero";
+import { Experience } from "@/components/futura/Experience";
+import { About, Conversion, HowItWorks, Work } from "@/components/futura/Story";
+import { Contact, Footer } from "@/components/futura/Contact";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const TITLE = "FUTURA — See What's Next | Nisha H";
+const DESCRIPTION =
+  "FUTURA transforms business ideas into interactive digital concepts. Experience your future brand, website and digital experience with AI.";
+
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "FUTURA",
+          description: DESCRIPTION,
+          author: {
+            "@type": "Person",
+            name: "Nisha H",
+            jobTitle: "AI & Web Developer",
+            email: "nisha240106@gmail.com",
+          },
+        }),
+      },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background">
+      <Nav />
+      <main>
+        <Hero />
+        <Experience />
+        <HowItWorks />
+        <Conversion />
+        <About />
+        <Work />
+        <Contact />
+      </main>
+      <Footer />
     </div>
   );
 }
