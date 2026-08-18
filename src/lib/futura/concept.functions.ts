@@ -19,11 +19,12 @@ export const generateConceptFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => inputSchema.parse(data))
   .handler(async ({ data }) => {
     const apiKey = process.env["LOVABLE_API_KEY"];
-    if (!apiKey) return { mode: "demo" as const, overlay: null };
+    if (!apiKey) { console.error("FUTURA: no key"); return { mode: "demo" as const, overlay: null }; }
     try {
       const overlay = await buildAiConcept(data, apiKey);
       return overlay ? { mode: "ai" as const, overlay } : { mode: "demo" as const, overlay: null };
-    } catch {
+    } catch (e) {
+      console.error("FUTURA ai error", e);
       return { mode: "demo" as const, overlay: null };
     }
   });
